@@ -79,7 +79,7 @@ function love.load()
     paredeCima = Parede(0, 0, 500, 2, world, "paredeCima")
     paredeBaixo = Parede(0, 598, 500, 2, world, "paredeBaixo")
 
-    bloco = Bloco(100, 200, 100, 20, "bloco", world)
+    bloco = Bloco(100, 200, 50, 10, "bloco", world)
     
     plataforma1 = Plataforma(WINDOW_WIDTH/2 - 100, 500, 100, 20, "plataforma", world)
     
