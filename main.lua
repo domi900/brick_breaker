@@ -32,9 +32,9 @@ function ColisaoInicio(a, b, contact)
         if o1.tag == "bloco" or o2.tag == "bloco" then
             mensagem = o1.tag .. " destruiu " .. o2.tag
             if o1.tag == "bloco" then
-                blocoColisao = "colidiu"
+                blocoColisao = "colidiu" .. o1.index
             else
-                blocoColisao = "colidiu"
+                blocoColisao = "colidiu" .. o2.index
             end
         else
             mensagem = o1.tag .. " colidiu com " .. o2.tag
@@ -79,7 +79,16 @@ function love.load()
     paredeCima = Parede(0, 0, 500, 2, world, "paredeCima")
     paredeBaixo = Parede(0, 598, 500, 2, world, "paredeBaixo")
 
-    bloco = Bloco(100, 200, 50, 10, "bloco", world)
+    --cirando os blocos
+    blocos = {}
+
+    for i = 1, 8 do
+        if i == 1 then    
+            distanciax = 10
+        end
+        blocos[i] = Bloco(distanciax, 200, 50 , 10, "bloco", world, i)  -- Criando e armazenando os blocos
+        distanciax = distanciax + 60
+    end
     
     plataforma1 = Plataforma(WINDOW_WIDTH/2 - 100, 500, 100, 20, "plataforma", world)
     
@@ -111,9 +120,12 @@ function love.update(dt)
     end
 
     --checa se aconteceu uma colisão da bola com um bloco
-    if blocoColisao == "colidiu" then
-        bloco:destroy()
+    for i, bloco in ipairs(blocos) do
+        if blocoColisao == "colidiu" .. bloco.index then
+            bloco:destroy()
+        end
     end
+    
   
     plataforma1:update(dt)
     bola:update(dt)
@@ -149,7 +161,9 @@ function love.draw()
     plataforma1:render()
     bola:render()
     
-
-    bloco:render()
+    --renderizando blocos
+    for i, bloco in ipairs(blocos) do
+        bloco:render()
+    end
 
 end

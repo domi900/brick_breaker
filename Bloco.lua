@@ -1,12 +1,13 @@
 Bloco = Class{}
 
-function Bloco:init(x, y, width, height, tag, world)
+function Bloco:init(x, y, width, height, tag, world, index)
     self.x = x
     self.y = y
     self.width = width
     self.height = height
     self.dx = 0
     self.tag = tag
+    self.index = index
 
 
     self.world = world
