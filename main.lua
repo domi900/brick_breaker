@@ -81,13 +81,24 @@ function love.load()
 
     --cirando os blocos
     blocos = {}
+    indiceBloco = 1
 
-    for i = 1, 8 do
-        if i == 1 then    
-            distanciax = 10
+    for linha = 1, 4 do
+        
+        if linha == 1 then
+            linha_blocos = 200
         end
-        blocos[i] = Bloco(distanciax, 200, 50 , 10, "bloco", world, i)  -- Criando e armazenando os blocos
-        distanciax = distanciax + 60
+        
+        for i = 1, 8 do
+            if i == 1 then    
+                distanciax = 10
+            end
+            blocos[indiceBloco] = Bloco(distanciax, linha_blocos, 50 , 10, "bloco", world, indiceBloco)  -- Criando e armazenando os blocos
+            distanciax = distanciax + 60
+            indiceBloco = indiceBloco + 1
+        end
+
+        linha_blocos = linha_blocos - 40
     end
     
     plataforma1 = Plataforma(WINDOW_WIDTH/2 - 100, 500, 100, 20, "plataforma", world)
