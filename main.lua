@@ -22,6 +22,8 @@ mensagem = ""
 
 blocoColisao = "w"
 
+colisaoBolaPlataforma = false
+
 -- funções de detectar colisão
 function ColisaoInicio(a, b, contact)
     local o1, o2 = a:getUserData(), b:getUserData()
@@ -36,10 +38,15 @@ function ColisaoInicio(a, b, contact)
             else
                 blocoColisao = "colidiu" .. o2.index
             end
+        elseif o1.tag == "bola" or o2.tag == "bola" then
+            if o1.tag == "plataforma" then
+                colisaoBolaPlataforma = true
+            else
+                colisaoBolaPlataforma = true
+            end    
         else
             mensagem = o1.tag .. " colidiu com " .. o2.tag
         end
-
     end
 
 end
@@ -137,6 +144,11 @@ function love.update(dt)
         end
     end
     
+    --checa se aconteceu uma colisão da bola com a plataforma
+    if colisaoBolaPlataforma then
+        bola:aplicarForca()
+        colisaoBolaPlataforma = false
+    end    
   
     plataforma1:update(dt)
     bola:update(dt)

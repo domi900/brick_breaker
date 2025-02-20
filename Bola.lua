@@ -36,6 +36,10 @@ function Bola:update(dt)
     self.x, self.y = self.body:getPosition()
 end
 
+function Bola:aplicarForca()
+    self.body:applyForce( 0, -300 )
+end    
+
 function Bola:reset(x, y)
     self.body:setPosition( x, y )
     
