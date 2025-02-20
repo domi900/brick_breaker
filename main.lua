@@ -16,7 +16,7 @@ require 'Parede'
 require 'Bloco'
 
 --variaveis globais
-plataforma_velocidade = 200
+plataforma_velocidade = 350
 
 mensagem = ""
 
@@ -122,7 +122,7 @@ function love.update(dt)
 
     --movimetaçãoda plataforma
     if love.keyboard.isDown('left') then
-        if math.abs(plataforma1.x) < 2 then
+        if plataforma1.x < 2 then
             plataforma1.dx = 0
         else
             plataforma1.dx = -plataforma_velocidade
