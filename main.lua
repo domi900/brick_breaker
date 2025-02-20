@@ -24,6 +24,8 @@ blocoColisao = "w"
 
 colisaoBolaPlataforma = false
 
+gamestate = "start"
+
 -- funções de detectar colisão
 function ColisaoInicio(a, b, contact)
     local o1, o2 = a:getUserData(), b:getUserData()
@@ -38,12 +40,12 @@ function ColisaoInicio(a, b, contact)
             else
                 blocoColisao = "colidiu" .. o2.index
             end
-        elseif o1.tag == "bola" or o2.tag == "bola" then
-            if o1.tag == "plataforma" then
+        elseif o1.tag == "plataforma" or o2.tag == "plataforma" then
+            if o1.tag == "bola" or o2.tag == "bola" then
                 colisaoBolaPlataforma = true
-            else
-                colisaoBolaPlataforma = true
-            end    
+            end
+        elseif o1.tag == "sensor" or o2.tag == "sensor" then
+            gamestate = "start"
         else
             mensagem = o1.tag .. " colidiu com " .. o2.tag
         end
@@ -113,43 +115,57 @@ function love.load()
     
     bola = Bola(300, 30, 10, "bola", world)
     
+    --sensor
+    sensor = {}
+    sensor.x = 0
+    sensor.y = 570
+    sensor.width = 500
+    sensor.height = 20
+    sensor.tag = "sensor"
+    sensor.body = love.physics.newBody(world, sensor.x, sensor.y, "static")
+    sensor.shape = love.physics.newRectangleShape(sensor.width / 2, sensor.height / 2, sensor.width, sensor.height)
+    sensor.fixture = love.physics.newFixture(sensor.body, sensor.shape)
+    sensor.fixture:setUserData(sensor)
+    sensor.fixture:setSensor(true)
 
 end
 
 function love.update(dt)
 
-    world:update(dt)
+    if gamestate == "play" then    
+        world:update(dt)
+        
+        --movimetaçãoda plataforma
+        if love.keyboard.isDown('left') then
+            if plataforma1.x < 2 then
+                plataforma1.dx = 0
+            else
+                plataforma1.dx = -plataforma_velocidade
+            end
+        elseif love.keyboard.isDown('right') then
+            if math.abs(plataforma1.x + plataforma1.width) >= 498 then
+                plataforma1.dx = 0
+            else
+                plataforma1.dx = plataforma_velocidade
+            end
+        else
+            plataforma1.dx = 0
+        end
 
-    --movimetaçãoda plataforma
-    if love.keyboard.isDown('left') then
-        if plataforma1.x < 2 then
-            plataforma1.dx = 0
-        else
-            plataforma1.dx = -plataforma_velocidade
+        --checa se aconteceu uma colisão da bola com um bloco
+        for i, bloco in ipairs(blocos) do
+            if blocoColisao == "colidiu" .. bloco.index then
+                bloco:destroy()
+            end
         end
-    elseif love.keyboard.isDown('right') then
-        if math.abs(plataforma1.x + plataforma1.width) >= 498 then
-            plataforma1.dx = 0
-        else
-            plataforma1.dx = plataforma_velocidade
-        end
-    else
-        plataforma1.dx = 0
+        
+        --checa se aconteceu uma colisão da bola com a plataforma
+        if colisaoBolaPlataforma then
+            bola:aplicarForca()
+            colisaoBolaPlataforma = false
+        end    
     end
 
-    --checa se aconteceu uma colisão da bola com um bloco
-    for i, bloco in ipairs(blocos) do
-        if blocoColisao == "colidiu" .. bloco.index then
-            bloco:destroy()
-        end
-    end
-    
-    --checa se aconteceu uma colisão da bola com a plataforma
-    if colisaoBolaPlataforma then
-        bola:aplicarForca()
-        colisaoBolaPlataforma = false
-    end    
-  
     plataforma1:update(dt)
     bola:update(dt)
 
@@ -163,6 +179,12 @@ function love.keypressed(key)
     if key == 'escape' then
         -- fecha o jogo
         love.event.quit()
+    elseif key == 'enter' or key == 'return' then
+        if gamestate == "start" then
+            gamestate = "play"
+        else
+            gamestate = "start"
+        end
     end
 end
 
@@ -172,6 +194,7 @@ function love.draw()
 
     love.graphics.setFont(smallFont)
     love.graphics.print(mensagem, 100, 100, nil, 2)
+    love.graphics.print(gamestate, 100, 400, nil, 2)
 
 
     --Renderização
@@ -181,12 +204,16 @@ function love.draw()
     paredeCima:render()
     paredeBaixo:render()
 
-    plataforma1:render()
-    bola:render()
-    
-    --renderizando blocos
-    for i, bloco in ipairs(blocos) do
-        bloco:render()
+    if gamestate == "play" then
+        plataforma1:render()
+        bola:render()
+        
+        --renderizando blocos
+        for i, bloco in ipairs(blocos) do
+            bloco:render()
+        end
     end
+
+    love.graphics.rectangle("line", sensor.x, sensor.y, sensor.width, sensor.height)
 
 end
