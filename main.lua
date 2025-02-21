@@ -58,6 +58,29 @@ function ColisaoFim(a, b, contact)
 
 end
 
+function criarOsblocos(world)
+    blocos = {}
+    indiceBloco = 1
+
+    for linha = 1, 4 do
+        
+        if linha == 1 then
+            linha_blocos = 200
+        end
+        
+        for i = 1, 8 do
+            if i == 1 then    
+                distanciax = 10
+            end
+            blocos[indiceBloco] = Bloco(distanciax, linha_blocos, 50 , 10, "bloco", world, indiceBloco)  -- Criando e armazenando os blocos
+            distanciax = distanciax + 60
+            indiceBloco = indiceBloco + 1
+        end
+
+        linha_blocos = linha_blocos - 40
+    end
+end
+
 
 
 
@@ -89,26 +112,7 @@ function love.load()
     paredeBaixo = Parede(0, 598, 500, 2, world, "paredeBaixo")
 
     --cirando os blocos
-    blocos = {}
-    indiceBloco = 1
-
-    for linha = 1, 4 do
-        
-        if linha == 1 then
-            linha_blocos = 200
-        end
-        
-        for i = 1, 8 do
-            if i == 1 then    
-                distanciax = 10
-            end
-            blocos[indiceBloco] = Bloco(distanciax, linha_blocos, 50 , 10, "bloco", world, indiceBloco)  -- Criando e armazenando os blocos
-            distanciax = distanciax + 60
-            indiceBloco = indiceBloco + 1
-        end
-
-        linha_blocos = linha_blocos - 40
-    end
+    criarOsblocos(world)
     
     plataforma1 = Plataforma(WINDOW_WIDTH/2 - 100, 500, 100, 20, "plataforma", world)
     
