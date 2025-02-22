@@ -21,6 +21,10 @@ function Plataforma:update(dt)
     self.x = self.dx
 end
 
+function Plataforma:reset(x, y)
+    self.x = x
+    self.y = y
+end
 
 function Plataforma:render()
     love.graphics.rectangle('fill', self.x, self.y, self.width, self.height)

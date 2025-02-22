@@ -108,6 +108,7 @@ function love.update(dt)
 
     if gamestate == "menu" then
         nivel.bola:reset(300, 300)
+        nivel.plataforma:reset(WINDOW_WIDTH/2 - 100, 500)
     end
     
 

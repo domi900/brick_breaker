@@ -37,9 +37,9 @@ end
 function Bola:aplicarForca(direcao)
     self.dy = -200
     if direcao == "direita" then
-        self.dx = 200
+        self.dx = math.random(10, 200)
     elseif direcao == "esquerda" then
-        self.dx = -200
+        self.dx = math.random(-200, -10)
     else    
         self.dx = self.dx
     end

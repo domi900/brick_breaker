@@ -41,7 +41,7 @@ function Nivel:criarBlocos()
             if i == 1 then
                 distanciax = 40
             end
-            local novoBloco = Bloco(distanciax, linha_blocos, 50, 10, "bloco", indiceBloco)
+            local novoBloco = Bloco(distanciax, linha_blocos, 50, 20, "bloco", indiceBloco)
             table.insert(self.blocos, novoBloco)
             distanciax = distanciax + 60
             indiceBloco = indiceBloco + 1
@@ -60,9 +60,13 @@ end
 
 function Nivel:checarColisoes()
     for i = #self.blocos, 1, -1 do
-        if self.bola.x + self.bola.raio > self.blocos[i].x and self.bola.x - self.bola.raio < self.blocos[i].x + nivel.blocos[i].width and
-        self.bola.y + self.bola.raio > self.blocos[i].y and self.bola.y - self.bola.raio < self.blocos[i].y + self.blocos[i].height then
-            table.remove(self.blocos, i) -- Remove corretamente da lista
+        local bloco = self.blocos[i]
+        if self.bola.x < bloco.x + bloco.width and
+           self.bola.x + self.bola.raio * 2 > bloco.x and
+           self.bola.y < bloco.y + bloco.height and
+           self.bola.y + self.bola.raio * 2 > bloco.y then
+            table.remove(self.blocos, i)
+            self.bola.dy = -self.bola.dy
         end
     end
 end
