@@ -38,6 +38,9 @@ function Nivel:criarBlocos()
         local distanciax = 10
 
         for i = 1, 8 do
+            if i == 1 then
+                distanciax = 40
+            end
             local novoBloco = Bloco(distanciax, linha_blocos, 50, 10, "bloco", indiceBloco)
             table.insert(self.blocos, novoBloco)
             distanciax = distanciax + 60
