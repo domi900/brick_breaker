@@ -18,7 +18,7 @@ function Nivel:init()
     
     self.world = world
     
-    self.bola = Bola(300, 300, 10, "bola")
+    self.bola = Bola(300, 300, 20, 20, "bola")
     
 end
 
@@ -41,7 +41,7 @@ function Nivel:criarBlocos()
             if i == 1 then
                 distanciax = 40
             end
-            local novoBloco = Bloco(distanciax, linha_blocos, 50, 10, "bloco", indiceBloco)
+            local novoBloco = Bloco(distanciax, linha_blocos, 50, 20, "bloco", indiceBloco)
             table.insert(self.blocos, novoBloco)
             distanciax = distanciax + 60
             indiceBloco = indiceBloco + 1
@@ -60,12 +60,35 @@ end
 
 function Nivel:checarColisoes()
     for i = #self.blocos, 1, -1 do
-        if self.bola.x + self.bola.raio > self.blocos[i].x and self.bola.x - self.bola.raio < self.blocos[i].x + nivel.blocos[i].width and
-        self.bola.y + self.bola.raio > self.blocos[i].y and self.bola.y - self.bola.raio < self.blocos[i].y + self.blocos[i].height then
-            table.remove(self.blocos, i) -- Remove corretamente da lista
+        local bloco = self.blocos[i]
+
+        -- Verifica colisão com o bloco
+        if self.bola.x < bloco.x + bloco.width and self.bola.x + self.bola.width > bloco.x and
+           self.bola.y < bloco.y + bloco.height and self.bola.y + self.bola.height > bloco.y then
+            
+            -- Calcula a sobreposição para determinar a direção da colisão
+            local sobreposicaoEsquerda = math.abs((self.bola.x + self.bola.width) - bloco.x)
+            local sobreposicaoDireita = math.abs(self.bola.x - (bloco.x + bloco.width))
+            local sobreposicaoCima = math.abs((self.bola.y + self.bola.height) - bloco.y)
+            local sobreposicaoBaixo = math.abs(self.bola.y - (bloco.y + bloco.height))
+
+            -- Descobre qual lado foi atingido primeiro
+            if sobreposicaoEsquerda < sobreposicaoDireita and sobreposicaoEsquerda < sobreposicaoCima and sobreposicaoEsquerda < sobreposicaoBaixo then
+                self.bola.dx = -math.abs(self.bola.dx)  -- Rebater para a esquerda
+            elseif sobreposicaoDireita < sobreposicaoEsquerda and sobreposicaoDireita < sobreposicaoCima and sobreposicaoDireita < sobreposicaoBaixo then
+                self.bola.dx = math.abs(self.bola.dx)  -- Rebater para a direita
+            elseif sobreposicaoCima < sobreposicaoBaixo then
+                self.bola.dy = -math.abs(self.bola.dy)  -- Rebater para cima
+            else
+                self.bola.dy = math.abs(self.bola.dy)  -- Rebater para baixo
+            end
+
+            -- Remove o bloco atingido
+            table.remove(self.blocos, i)
         end
     end
 end
+
 
 function Nivel:render()
     for _, bloco in ipairs(self.blocos) do

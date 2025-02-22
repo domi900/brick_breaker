@@ -88,11 +88,11 @@ function love.update(dt)
         nivel:checarColisoes()
         
         --checa se aconteceu uma colisão da bola com a plataforma
-        if nivel.bola.x + nivel.bola.raio > nivel.plataforma.x and nivel.bola.x - nivel.bola.raio < nivel.plataforma.x + nivel.plataforma.width and
-        nivel.bola.y + nivel.bola.raio > nivel.plataforma.y and nivel.bola.y - nivel.bola.raio < nivel.plataforma.y + nivel.plataforma.height then
-            mensagem = "colidiu"
-            
-            nivel.bola.y = nivel.plataforma.y - nivel.bola.raio           
+        if nivel.bola.x + nivel.bola.width > nivel.plataforma.x and nivel.bola.x < nivel.plataforma.x + nivel.plataforma.width and
+            nivel.bola.y + nivel.bola.width > nivel.plataforma.y and nivel.bola.y < nivel.plataforma.y + nivel.plataforma.height then
+                mensagem = "colidiu"
+                
+                nivel.bola.y = nivel.plataforma.y - nivel.bola.width  
             if nivel.plataforma.dx > 0 then
                 nivel.bola:aplicarForca("direita")
             elseif nivel.plataforma.dx < 0 then
