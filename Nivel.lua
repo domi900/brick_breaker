@@ -14,17 +14,17 @@ function Nivel:init()
     self.blocos = {}
     --criarOsblocos(world)
     
-    self.plataforma1 = Plataforma(WINDOW_WIDTH/2 - 100, 500, 100, 20, "plataforma")
+    self.plataforma = Plataforma(WINDOW_WIDTH/2 - 100, 500, 100, 20, "plataforma")
     
     self.world = world
     
-    self.bola = Bola(300, 30, 10, "bola")
+    self.bola = Bola(300, 300, 10, "bola")
     
 end
 
 function Nivel:Update(dt)
     self.bola:update(dt)
-    self.plataforma1:update(dt)
+    self.plataforma:update(dt)
     
 end
 
@@ -72,6 +72,6 @@ function Nivel:render()
         bloco:render()
     end
     self.bola:render()
-    self.plataforma1:render()
+    self.plataforma:render()
 
 end

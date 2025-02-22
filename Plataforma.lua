@@ -17,8 +17,8 @@ end
 function Plataforma:update(dt)
 
     --movimentação da plataforma
-
-
+    self.dx = self.x + self.dx * dt
+    self.x = self.dx
 end
 
 
