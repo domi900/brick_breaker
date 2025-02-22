@@ -30,26 +30,31 @@ end
 
 
 function Nivel:criarBlocos()
-    self:limparBlocos()  -- Garante que os blocos antigos sejam removidos antes de criar novos
-    local indiceBloco = 1
-    local linha_blocos = 200
+    self:limparBlocos()  -- Remove blocos antigos antes de criar novos
 
-    for linha = 1, 4 do
-        local distanciax = 10
+    local layout = {
+        "XXXXXXXXX",  
+        "X      XX",  
+        "X XX XXXX",  
+        "XXXXXXXXX"
+    }
 
-        for i = 1, 8 do
-            if i == 1 then
-                distanciax = 40
+    local bloco_largura = 50
+    local bloco_altura = 20
+    local inicio_x = 30
+    local inicio_y = 100
+
+    for linha = 1, #layout do
+        for coluna = 1, #layout[linha] do
+            if layout[linha]:sub(coluna, coluna) == "X" then
+                local x = inicio_x + (coluna - 1) * (bloco_largura + 5)
+                local y = inicio_y + (linha - 1) * (bloco_altura + 5)
+                table.insert(self.blocos, Bloco(x, y, bloco_largura, bloco_altura, "bloco"))
             end
-            local novoBloco = Bloco(distanciax, linha_blocos, 50, 20, "bloco", indiceBloco)
-            table.insert(self.blocos, novoBloco)
-            distanciax = distanciax + 60
-            indiceBloco = indiceBloco + 1
         end
-
-        linha_blocos = linha_blocos - 40
     end
 end
+
 
 function Nivel:limparBlocos()
     for i = #self.blocos, 1, -1 do
@@ -61,12 +66,10 @@ end
 function Nivel:checarColisoes()
     for i = #self.blocos, 1, -1 do
         local bloco = self.blocos[i]
-        if self.bola.x < bloco.x + bloco.width and
-           self.bola.x + self.bola.raio * 2 > bloco.x and
-           self.bola.y < bloco.y + bloco.height and
-           self.bola.y + self.bola.raio * 2 > bloco.y then
-            table.remove(self.blocos, i)
+        if bloco.y + bloco.height == self.bola.y - self.bola.raio  then
             self.bola.dy = -self.bola.dy
+            bloco:destroy()
+            table.remove(self.blocos, i)
         end
     end
 end
