@@ -58,10 +58,10 @@ function Nivel:limparBlocos()
     end
 end
 
-function Nivel:checarColisoes(blocoColisao)
+function Nivel:checarColisoes()
     for i = #self.blocos, 1, -1 do
-        if blocoColisao == "colidiu" .. self.blocos[i].index then
-            self.blocos[i]:destroy()
+        if self.bola.x + self.bola.raio > self.blocos[i].x and self.bola.x - self.bola.raio < self.blocos[i].x + nivel.blocos[i].width and
+        self.bola.y + self.bola.raio > self.blocos[i].y and self.bola.y - self.bola.raio < self.blocos[i].y + self.blocos[i].height then
             table.remove(self.blocos, i) -- Remove corretamente da lista
         end
     end

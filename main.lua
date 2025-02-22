@@ -85,7 +85,7 @@ function love.update(dt)
         end
 
         --checa se aconteceu uma colisão da bola com um bloco
-        nivel:checarColisoes(blocoColisao)
+        nivel:checarColisoes()
         
         --checa se aconteceu uma colisão da bola com a plataforma
         if nivel.bola.x + nivel.bola.raio > nivel.plataforma.x and nivel.bola.x - nivel.bola.raio < nivel.plataforma.x + nivel.plataforma.width and
@@ -100,8 +100,10 @@ function love.update(dt)
             else
                 nivel.bola:aplicarForca("parado")
             end
-            
-        end    
+        end  
+        
+
+        
     end
 
     if gamestate == "menu" then
