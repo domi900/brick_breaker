@@ -6,7 +6,7 @@ function Bola:init(x, y, radius, tag)
     self.y = y
     self.raio = radius
     self.tag = tag
-
+    self.diametro = self.raio * 2
     self.world = world
 
     self.dy = 200
@@ -54,4 +54,5 @@ end
 
 function Bola:render()
     love.graphics.circle("fill", self.x, self.y, self.raio)
+    love.graphics.circle("line", self.x, self.y, self.raio + 2)
 end

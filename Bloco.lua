@@ -10,7 +10,11 @@ function Bloco:init(x, y, width, height, tag, index)
 
 end
 
-function Bloco:destroy()
+function Bloco:checarColisao()
+    if self.x < nivel.bola.x + nivel.bola.raio and self.x + self.width > nivel.bola.x - nivel.bola.raio and
+    self.y < nivel.bola.y + nivel.bola.raio and self.y + self.height > nivel.bola.y - nivel.bola.raio then
+        return true
+    end
     
 end
 
