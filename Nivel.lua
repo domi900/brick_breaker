@@ -66,11 +66,35 @@ end
 function Nivel:checarColisoes()
     for i = #self.blocos, 1, -1 do
         local bloco = self.blocos[i]
-        if bloco.y + bloco.height == self.bola.y - self.bola.raio  then
-            self.bola.dy = -self.bola.dy
-            bloco:destroy()
+        if self.bola.x + self.bola.raio > bloco.x and self.bola.x - self.bola.raio < bloco.x + bloco.width and
+        self.bola.y + self.bola.raio > bloco.y and self.bola.y - self.bola.raio < bloco.y + bloco.height then
+
+            -- Calcula a sobreposição da bola com o bloco
+            local overlapLeft = math.abs((self.bola.x + self.bola.raio) - bloco.x)
+            local overlapRight = math.abs((self.bola.x - self.bola.raio) - (bloco.x + bloco.width))
+            local overlapTop = math.abs((self.bola.y + self.bola.raio) - bloco.y)
+            local overlapBottom = math.abs((self.bola.y - self.bola.raio) - (bloco.y + bloco.height))
+
+            -- Determina se a colisão foi mais horizontal ou vertical
+            if overlapLeft < overlapRight and overlapLeft < overlapTop and overlapLeft < overlapBottom then
+                -- Colisão pela esquerda
+                self.bola.dx = -math.abs(self.bola.dx)
+            elseif overlapRight < overlapLeft and overlapRight < overlapTop and overlapRight < overlapBottom then
+                -- Colisão pela direita
+                self.bola.dx = math.abs(self.bola.dx)
+            elseif overlapTop < overlapLeft and overlapTop < overlapRight and overlapTop < overlapBottom then
+                -- Colisão pelo topo
+                self.bola.dy = -math.abs(self.bola.dy)
+            elseif overlapBottom < overlapLeft and overlapBottom < overlapRight and overlapBottom < overlapTop then
+                -- Colisão pela parte inferior
+                self.bola.dy = math.abs(self.bola.dy)
+            end
+
+            -- Remove o bloco da lista
             table.remove(self.blocos, i)
         end
+
+
     end
 end
 
