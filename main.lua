@@ -85,22 +85,25 @@ function love.update(dt)
         end
 
         --checa se aconteceu uma colisão da bola com um bloco
-        nivel:checarColisoes()
-        
+        if nivel.bola.dy < 0 then    
+            nivel:checarColisoes()
+        end
         --checa se aconteceu uma colisão da bola com a plataforma
-        if nivel.bola.x + nivel.bola.raio > nivel.plataforma.x and nivel.bola.x - nivel.bola.raio < nivel.plataforma.x + nivel.plataforma.width and
-        nivel.bola.y + nivel.bola.raio > nivel.plataforma.y and nivel.bola.y - nivel.bola.raio < nivel.plataforma.y + nivel.plataforma.height then
-            mensagem = "colidiu"
-            
-            nivel.bola.y = nivel.plataforma.y - nivel.bola.raio           
-            if nivel.plataforma.dx > 0 then
-                nivel.bola:aplicarForca("direita")
-            elseif nivel.plataforma.dx < 0 then
-                nivel.bola:aplicarForca("esquerda")
-            else
-                nivel.bola:aplicarForca("parado")
-            end
-        end  
+        if nivel.bola.dy > 0 then
+            if nivel.bola.x + nivel.bola.raio > nivel.plataforma.x and nivel.bola.x - nivel.bola.raio < nivel.plataforma.x + nivel.plataforma.width and
+            nivel.bola.y + nivel.bola.raio > nivel.plataforma.y and nivel.bola.y - nivel.bola.raio < nivel.plataforma.y + nivel.plataforma.height then
+                mensagem = "colidiu"
+                
+                nivel.bola.y = nivel.plataforma.y - nivel.bola.raio           
+                if nivel.plataforma.dx > 0 then
+                    nivel.bola:aplicarForca("direita")
+                elseif nivel.plataforma.dx < 0 then
+                    nivel.bola:aplicarForca("esquerda")
+                else
+                    nivel.bola:aplicarForca("parado")
+                end
+            end 
+        end
         
 
         
@@ -150,7 +153,9 @@ function love.draw()
     if gamestate == "play" then
         nivel:render()
     end
-
+    bolax, bolay= nivel.bola:getPosicao()
+    love.graphics.print(bolax, 100, 200, nil, 2)
+    love.graphics.print(bolay, 100, 250, nil, 2)
     
 
 end

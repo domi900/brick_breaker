@@ -33,10 +33,10 @@ function Nivel:criarBlocos()
     self:limparBlocos()  -- Remove blocos antigos antes de criar novos
 
     local layout = {
-        "XXXXXXXXX",  
-        "X      XX",  
-        "X XX XXXX",  
-        "XXXXXXXXX"
+        "XXXXXXXX",  
+        "X XXXXXX",  
+        "X XXXXXX",  
+        "XXXXXXXX"
     }
 
     local bloco_largura = 50
@@ -64,11 +64,15 @@ function Nivel:limparBlocos()
 end
 
 function Nivel:checarColisoes()
+    local bolaXdiametro, bolaYdiametro = self.bola:getPosicao()
     for i = #self.blocos, 1, -1 do
-        local bloco = self.blocos[i]
-        if bloco:checarColisao() then
-            table.remove(self.blocos, i)
-            self.bola.dy = -self.bola.dy
+        for j = #self.blocos, 1, -1 do
+            local bloco = self.blocos[j]
+            local blocoX, blocoY = bloco:getPosicao()
+            if bolaXdiametro > bloco.x and bolaXdiametro < blocoX and bolaYdiametro > bloco.y and bolaYdiametro < blocoY then
+                self.bola.dy = math.abs(self.bola.dy)
+                table.remove(self.blocos, j)
+            end
         end
     end
 end
@@ -79,5 +83,6 @@ function Nivel:render()
     end
     self.bola:render()
     self.plataforma:render()
+    
 
 end

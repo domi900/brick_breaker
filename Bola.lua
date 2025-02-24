@@ -45,6 +45,10 @@ function Bola:aplicarForca(direcao)
     end
 end    
 
+function Bola:getPosicao()
+    return self.x + self.diametro, self.y + self.diametro
+end
+
 function Bola:reset(x, y)
     self.x = x
     self.y = y
