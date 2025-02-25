@@ -1,0 +1,88 @@
+-- nivel.lua
+Nivel = Class{}
+
+require 'Bola'
+
+require 'Plataforma'
+
+require 'Bloco'
+
+
+
+function Nivel:init()
+    --cirando os blocos
+    self.blocos = {}
+    --criarOsblocos(world)
+    
+    self.plataforma = Plataforma(WINDOW_WIDTH/2 - 100, 500, 100, 20, "plataforma")
+    
+    self.world = world
+    
+    self.bola = Bola(300, 300, 10, "bola")
+    
+end
+
+function Nivel:Update(dt)
+    self.bola:update(dt)
+    self.plataforma:update(dt)
+    
+end
+
+
+function Nivel:criarBlocos()
+    self:limparBlocos()  -- Remove blocos antigos antes de criar novos
+
+    local layout = {
+        "XXXXXXXX",  
+        "X XXXXXX",  
+        "X XXXXXX",  
+        "XXXXXXXX"
+    }
+
+    local bloco_largura = 50
+    local bloco_altura = 20
+    local inicio_x = 30
+    local inicio_y = 100
+
+    for linha = 1, #layout do
+        for coluna = 1, #layout[linha] do
+            if layout[linha]:sub(coluna, coluna) == "X" then
+                local x = inicio_x + (coluna - 1) * (bloco_largura + 5)
+                local y = inicio_y + (linha - 1) * (bloco_altura + 5)
+                table.insert(self.blocos, Bloco(x, y, bloco_largura, bloco_altura, "bloco"))
+            end
+        end
+    end
+end
+
+
+function Nivel:limparBlocos()
+    for i = #self.blocos, 1, -1 do
+        self.blocos[i]:destroy()
+        table.remove(self.blocos, i)
+    end
+end
+
+function Nivel:checarColisoes()
+    local bolaXdiametro, bolaYdiametro = self.bola:getPosicao()
+    for i = #self.blocos, 1, -1 do
+        for j = #self.blocos, 1, -1 do
+            local bloco = self.blocos[j]
+            local blocoX, blocoY = bloco:getPosicao()
+            if bolaXdiametro > bloco.x and bolaXdiametro < blocoX and bolaYdiametro > bloco.y and bolaYdiametro < blocoY then
+                self.bola.dy = math.abs(self.bola.dy)
+                table.remove(self.blocos, j)
+            end
+        end
+    end
+end
+
+function Nivel:render()
+    for _, bloco in ipairs(self.blocos) do
+        bloco:render()
+    end
+    self.bola:render()
+    self.plataforma:render()
+    
+
+end
