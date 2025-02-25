@@ -22,7 +22,7 @@ mensagem = ""
 
 blocoColisao = "w"
 
-bolaDirecao = "cima"
+bolaDirecao = ""
 
 colisaoBolaPlataforma = false
 
@@ -138,10 +138,11 @@ function love.load()
     --cirando os blocos
     --criarOsblocos(world)
     
-    plataforma1 = Plataforma(WINDOW_WIDTH/2 - 100, 500, 100, 20, "plataforma", world)
+    --plataforma
+    plataforma1 = Plataforma(200, 520, 100, 20, "plataforma", world)
     
-    
-    bola = Bola(300, 30, 10, "bola", world)
+    --bola
+    bola = Bola(250, 500, 10, "bola", world)
     
     --sensor
     sensor = {}
@@ -160,8 +161,10 @@ end
 
 function love.update(dt)
 
+    world:update(dt)
+
     if gamestate == "play" then    
-        world:update(dt)
+        
         
         --movimetaçãoda plataforma
         if love.keyboard.isDown('left') then
@@ -211,13 +214,36 @@ function love.update(dt)
             bolaDirecao = ""
             colisaoBolaPlataforma = false
         end    
+        
+    elseif gamestate == "start" then
+        --movimetaçãoda plataforma
+        if love.keyboard.isDown('left') then
+            if plataforma1.x < 2 then
+                plataforma1.dx = 0
+            else
+                plataforma1.dx = -plataforma_velocidade
+            end
+        elseif love.keyboard.isDown('right') then
+            if math.abs(plataforma1.x + plataforma1.width) >= 498 then
+                plataforma1.dx = 0
+            else
+                plataforma1.dx = plataforma_velocidade
+            end
+        else
+            plataforma1.dx = 0
+        end
+
+        --bola acompanhar a plataforma
+        bola.body:setPosition(plataforma1.x + plataforma1.width / 2, bola.y)
     end
 
     plataforma1:update(dt)
     bola:update(dt)
 
     if bola.y > 600 then
-        bola:reset(300, 250, dt)
+        bola:reset()
+        plataforma1:reset()
+        gamestate = start
     end
 
 end
@@ -232,6 +258,8 @@ function love.keypressed(key)
             bola:aplicarForca("cima")
         else
             gamestate = "start"
+            bola:reset()
+            plataforma1:reset()
         end
     end
 end
@@ -252,18 +280,16 @@ function love.draw()
     paredeCima:render()
     paredeBaixo:render()
 
-    if gamestate == "play" then
-        plataforma1:render()
-        bola:render()
+
+    plataforma1:render()
+    bola:render()
         
-        --renderizando blocos
-        if blocos then
-            for i, bloco in ipairs(blocos) do
-                bloco:render()
-            end
+    --renderizando blocos
+    if blocos then
+        for i, bloco in ipairs(blocos) do
+            bloco:render()
         end
     end
-
     love.graphics.rectangle("line", sensor.x, sensor.y, sensor.width, sensor.height)
 
 end

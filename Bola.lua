@@ -48,8 +48,9 @@ function Bola:aplicarForca(direcao)
     --self.body:applyForce( 0, -300 )
 end    
 
-function Bola:reset(x, y)
-    self.body:setPosition( x, y )
+function Bola:reset()
+    self.body:setPosition(250, 520)
+    self.body:setLinearVelocity(0, 0)
     
 end
 

@@ -32,6 +32,10 @@ function Plataforma:update(dt)
 
 end
 
+function Plataforma:reset()
+    self.body:setPosition(250, 520)
+    self.body:setLinearVelocity(0, 0)
+end
 
 function Plataforma:render()
     love.graphics.rectangle('fill', self.x, self.y, self.width, self.height)
