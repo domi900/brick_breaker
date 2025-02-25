@@ -22,7 +22,8 @@ mensagem = ""
 
 blocoColisao = "w"
 
-bolaDirecao = ""
+bolaCimaBaixo = ""
+esquerdaDireita = ""
 
 colisaoBolaPlataforma = false
 
@@ -46,19 +47,19 @@ function ColisaoInicio(a, b, contact)
         -- verifica se a colisão é entre a bola e as paredes  
         elseif o1.tag == "paredeCima" or o2.tag == "paredeCima" then
             if o1.tag == "bola" or o2.tag == "bola" then
-                bolaDirecao = "baixo"
+                bolaCimaBaixo = "Baixo"
             end
         elseif o1.tag == "paredeBaixo" or o2.tag == "paredeBaixo" then
             if o1.tag == "bola" or o2.tag == "bola" then
-                bolaDirecao = "cima"
+                gamestate = "start"
             end
         elseif o1.tag == "paredeDireita" or o2.tag == "paredeDireita" then
             if o1.tag == "bola" or o2.tag == "bola" then
-                bolaDirecao = "esquerda"
+                esquerdaDireita = "paredeDireita"
             end
         elseif o1.tag == "paredeEsquerda" or o2.tag == "paredeEsquerda" then
             if o1.tag == "bola" or o2.tag == "bola" then
-                bolaDirecao = "direita"
+                esquerdaDireita = "paredeEsquerda"
             end    
         
         -- verifica se a colisão é entre a bola e a plataforma    
@@ -193,25 +194,21 @@ function love.update(dt)
         end
 
         --verifica se aconteceu uma colisão da bola com as paredes
-        if bolaDirecao == "baixo" then
-            bola:aplicarForca("baixo")
-            bolaDirecao = ""
-        elseif bolaDirecao == "cima" then
-            bola:aplicarForca("cima")
-            bolaDirecao = ""
-        elseif bolaDirecao == "esquerda" then
-            bola:aplicarForca("esquerda")
-            bolaDirecao = ""
-        elseif bolaDirecao == "direita" then
-            bola:aplicarForca("direita")
-            bolaDirecao = ""
+        if bolaCimaBaixo == "Baixo" then
+                bola:aplicarForca("baixo", "")
+                bolaCimaBaixo = ""
+        elseif esquerdaDireita == "paredeDireita" then
+            bola:aplicarForca("", "esquerda")
+            esquerdaDireita = ""
+        elseif esquerdaDireita == "paredeEsquerda" then
+            bola:aplicarForca("", "direita")
+            esquerdaDireita = ""
         end
-
 
         --verifica se aconteceu uma colisão da bola com a plataforma
         if colisaoBolaPlataforma then
-            bola:aplicarForca("cima")
-            bolaDirecao = ""
+            bola:aplicarForca("cimaInicio")
+            bolaCimaBaixo = ""
             colisaoBolaPlataforma = false
         end    
         
@@ -234,7 +231,7 @@ function love.update(dt)
         end
 
         --bola acompanhar a plataforma
-        bola.body:setPosition(plataforma1.x + plataforma1.width / 2, bola.y)
+        bola.body:setPosition(plataforma1.x + plataforma1.width / 2, 500)
     end
 
     plataforma1:update(dt)
@@ -255,7 +252,7 @@ function love.keypressed(key)
     elseif key == 'enter' or key == 'return' then
         if gamestate == "start" then
             gamestate = "play"
-            bola:aplicarForca("cima")
+            bola:aplicarForca("cima", "")
         else
             gamestate = "start"
             bola:reset()
