@@ -22,6 +22,8 @@ mensagem = ""
 
 blocoColisao = "w"
 
+bolaDirecao = "cima"
+
 colisaoBolaPlataforma = false
 
 gamestate = "start"
@@ -31,7 +33,7 @@ function ColisaoInicio(a, b, contact)
     local o1, o2 = a:getUserData(), b:getUserData()
     
     
-    -- checa se a colosão é entra a bola e um bloco
+    -- verifica se a colosão é entra a bola e um bloco
     if o1 and o2 then
         if o1.tag == "bloco" or o2.tag == "bloco" then
             mensagem = o1.tag .. " destruiu " .. o2.tag
@@ -40,10 +42,32 @@ function ColisaoInicio(a, b, contact)
             else
                 blocoColisao = "colidiu" .. o2.index
             end
+
+        -- verifica se a colisão é entre a bola e as paredes  
+        elseif o1.tag == "paredeCima" or o2.tag == "paredeCima" then
+            if o1.tag == "bola" or o2.tag == "bola" then
+                bolaDirecao = "baixo"
+            end
+        elseif o1.tag == "paredeBaixo" or o2.tag == "paredeBaixo" then
+            if o1.tag == "bola" or o2.tag == "bola" then
+                bolaDirecao = "cima"
+            end
+        elseif o1.tag == "paredeDireita" or o2.tag == "paredeDireita" then
+            if o1.tag == "bola" or o2.tag == "bola" then
+                bolaDirecao = "esquerda"
+            end
+        elseif o1.tag == "paredeEsquerda" or o2.tag == "paredeEsquerda" then
+            if o1.tag == "bola" or o2.tag == "bola" then
+                bolaDirecao = "direita"
+            end    
+        
+        -- verifica se a colisão é entre a bola e a plataforma    
         elseif o1.tag == "plataforma" or o2.tag == "plataforma" then
             if o1.tag == "bola" or o2.tag == "bola" then
                 colisaoBolaPlataforma = true
             end
+        
+        --verifica se a colisão é entre a bola e o sensor
         elseif o1.tag == "sensor" or o2.tag == "sensor" then
             gamestate = "start"
         else
@@ -101,7 +125,7 @@ function love.load()
 
     --mundo para a fisica
 
-    world = love.physics.newWorld(0,9.81 * 100)
+    world = love.physics.newWorld(0, 0)
     world:setCallbacks(ColisaoInicio, ColisaoFim)
 
 
@@ -112,7 +136,7 @@ function love.load()
     paredeBaixo = Parede(0, 598, 500, 2, world, "paredeBaixo")
 
     --cirando os blocos
-    criarOsblocos(world)
+    --criarOsblocos(world)
     
     plataforma1 = Plataforma(WINDOW_WIDTH/2 - 100, 500, 100, 20, "plataforma", world)
     
@@ -156,16 +180,35 @@ function love.update(dt)
             plataforma1.dx = 0
         end
 
-        --checa se aconteceu uma colisão da bola com um bloco
-        for i, bloco in ipairs(blocos) do
-            if blocoColisao == "colidiu" .. bloco.index then
-                bloco:destroy()
+        --verifica se aconteceu uma colisão da bola com um bloco
+        if blocos  then
+            for i, bloco in ipairs(blocos) do
+                if blocoColisao == "colidiu" .. bloco.index then
+                    bloco:destroy()
+                end
             end
         end
-        
-        --checa se aconteceu uma colisão da bola com a plataforma
+
+        --verifica se aconteceu uma colisão da bola com as paredes
+        if bolaDirecao == "baixo" then
+            bola:aplicarForca("baixo")
+            bolaDirecao = ""
+        elseif bolaDirecao == "cima" then
+            bola:aplicarForca("cima")
+            bolaDirecao = ""
+        elseif bolaDirecao == "esquerda" then
+            bola:aplicarForca("esquerda")
+            bolaDirecao = ""
+        elseif bolaDirecao == "direita" then
+            bola:aplicarForca("direita")
+            bolaDirecao = ""
+        end
+
+
+        --verifica se aconteceu uma colisão da bola com a plataforma
         if colisaoBolaPlataforma then
-            bola:aplicarForca()
+            bola:aplicarForca("cima")
+            bolaDirecao = ""
             colisaoBolaPlataforma = false
         end    
     end
@@ -186,6 +229,7 @@ function love.keypressed(key)
     elseif key == 'enter' or key == 'return' then
         if gamestate == "start" then
             gamestate = "play"
+            bola:aplicarForca("cima")
         else
             gamestate = "start"
         end
@@ -213,8 +257,10 @@ function love.draw()
         bola:render()
         
         --renderizando blocos
-        for i, bloco in ipairs(blocos) do
-            bloco:render()
+        if blocos then
+            for i, bloco in ipairs(blocos) do
+                bloco:render()
+            end
         end
     end
 
