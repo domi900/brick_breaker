@@ -12,7 +12,7 @@ function Bola:init(x, y, radius, tag, world)
 
     self.world = world
 
-    self.dy = 60
+    self.dy = 200
     self.dx = 0
 
     self.body = love.physics.newBody(world, self.x, self.y, "dynamic")
@@ -40,38 +40,53 @@ function Bola:aplicarForca(cimaBaixo, esquerdaDireita)
     --variação x
     local vx = self.dx
     
+
+    --a verificação é sobre a direção que a bola tem que ir depois da colisão
+
     if cimaBaixo == "cimaInicio" then
-        vx = math.random(-50, 50)
+        vx = math.random(-200, 170)
         self.dy = -self.dy
         self.dx = vx
-        self.body:applyLinearImpulse( -vx, self.dy, self.body:getX(), self.body:getY())
+        self.body:setLinearVelocity( vx, self.dy )
     
     elseif cimaBaixo == "cima" then
-        self.dy = -self.dy
         if vx < 0 then
-            self.body:applyLinearImpulse( -vx, self.dy, self.body:getX(), self.body:getY())
+            --mantem a direção vertical da bola, mas altera um pouco o angulo
+            vx = math.random(-200, -150)
+            self.dx = vx
+            --muda a direção da bola de baixo pra cima
+            self.dy = -self.dy
+            self.body:setLinearVelocity( vx, self.dy )
         else
-            self.body:applyLinearImpulse( vx, self.dy, self.body:getX(), self.body:getY())
+            vx = math.random(150, 200)
+            self.dx = vx
+            self.dy = -self.dy
+            self.body:setLinearVelocity( vx, self.dy )
         end
+
     elseif cimaBaixo == "baixo" then
-        self.dy = -self.dy
+        self.dy = 60
         if vx < 0 then
-            vx = math.random(30, 60)
-            self.body:applyLinearImpulse( -vx, self.dy, self.body:getX(), self.body:getY())
+            vx = math.random(-200, -150)
+            self.dx = vx
+            self.body:setLinearVelocity( vx, self.dy )
         else
-            vx = math.random(30, 60)
-            self.body:applyLinearImpulse( vx, self.dy, self.body:getX(), self.body:getY())
+            vx = math.random(150, 200)
+            self.dx = vx
+            self.body:setLinearVelocity( vx, self.dy )
         end
     end
 
+    --se a bola tem que ir para a esquerda self.dx tem que ser negativo
     if esquerdaDireita == "esquerda" then
-        self.dx = math.random(30, 60)
-        self.body:applyLinearImpulse( -self.dx, self.dy, self.body:getX(), self.body:getY())
+        self.dx = math.random(-200, -150)
+        self.body:setLinearVelocity( self.dx , self.dy )
     end
 
+    --se a bola tem que ir para a direita self.dx tem que ser positivo
     if esquerdaDireita == "direita" then
-        self.dx = math.random(30, 60)
-        self.body:applyLinearImpulse( self.dx, self.dy, self.body:getX(), self.body:getY())
+        self.dx = math.random(150, 200)
+        self.body:setLinearVelocity( self.dx, self.dy )
     end
     
 end    

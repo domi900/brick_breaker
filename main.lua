@@ -47,7 +47,7 @@ function ColisaoInicio(a, b, contact)
         -- verifica se a colisão é entre a bola e as paredes  
         elseif o1.tag == "paredeCima" or o2.tag == "paredeCima" then
             if o1.tag == "bola" or o2.tag == "bola" then
-                bolaCimaBaixo = "Baixo"
+                bolaCimaBaixo = "paredeCima"
             end
         elseif o1.tag == "paredeBaixo" or o2.tag == "paredeBaixo" then
             if o1.tag == "bola" or o2.tag == "bola" then
@@ -194,7 +194,8 @@ function love.update(dt)
         end
 
         --verifica se aconteceu uma colisão da bola com as paredes
-        if bolaCimaBaixo == "Baixo" then
+        --os parametros bolaCimaBaixo e esquerdaDireita informam a direção que a bola tem que ir depois da colisão
+        if bolaCimaBaixo == "paredeCima" then
                 bola:aplicarForca("baixo", "")
                 bolaCimaBaixo = ""
         elseif esquerdaDireita == "paredeDireita" then
@@ -207,7 +208,7 @@ function love.update(dt)
 
         --verifica se aconteceu uma colisão da bola com a plataforma
         if colisaoBolaPlataforma then
-            bola:aplicarForca("cimaInicio")
+            bola:aplicarForca("cima")
             bolaCimaBaixo = ""
             colisaoBolaPlataforma = false
         end    
@@ -250,9 +251,10 @@ function love.keypressed(key)
         -- fecha o jogo
         love.event.quit()
     elseif key == 'enter' or key == 'return' then
+        --quando o jogo começa, a bola é lançada
         if gamestate == "start" then
             gamestate = "play"
-            bola:aplicarForca("cima", "")
+            bola:aplicarForca("cimaInicio", "")
         else
             gamestate = "start"
             bola:reset()
