@@ -39,7 +39,7 @@ function ColisaoInicio(a, b, contact)
         if o1.tag == "bloco" or o2.tag == "bloco" then
             mensagem = o1.tag .. " destruiu " .. o2.tag
             if o1.tag == "bloco" then
-                blocoColisao = "colidiu" .. o1.index
+                blocoColisao = "colidiu" .. o1.index   
             else
                 blocoColisao = "colidiu" .. o2.index
             end
@@ -60,7 +60,7 @@ function ColisaoInicio(a, b, contact)
         elseif o1.tag == "paredeEsquerda" or o2.tag == "paredeEsquerda" then
             if o1.tag == "bola" or o2.tag == "bola" then
                 esquerdaDireita = "paredeEsquerda"
-            end    
+            end 
         
         -- verifica se a colisão é entre a bola e a plataforma    
         elseif o1.tag == "plataforma" or o2.tag == "plataforma" then
@@ -95,10 +95,10 @@ function criarOsblocos(world)
         
         for i = 1, 8 do
             if i == 1 then    
-                distanciax = 10
+                distanciax = 30
             end
-            blocos[indiceBloco] = Bloco(distanciax, linha_blocos, 50 , 10, "bloco", world, indiceBloco)  -- Criando e armazenando os blocos
-            distanciax = distanciax + 60
+            blocos[indiceBloco] = Bloco(distanciax, linha_blocos, 50 , 20, "bloco", world, indiceBloco)  -- Criando e armazenando os blocos
+            distanciax = distanciax + 55
             indiceBloco = indiceBloco + 1
         end
 
@@ -137,7 +137,7 @@ function love.load()
     paredeBaixo = Parede(0, 598, 500, 2, world, "paredeBaixo")
 
     --cirando os blocos
-    --criarOsblocos(world)
+    criarOsblocos(world)
     
     --plataforma
     plataforma1 = Plataforma(200, 520, 100, 20, "plataforma", world)

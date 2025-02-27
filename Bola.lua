@@ -19,7 +19,7 @@ function Bola:init(x, y, radius, tag, world)
     self.shape = love.physics.newCircleShape(self.r)
     self.fixture = love.physics.newFixture(self.body, self.shape)
     
-    --self.fixture:setRestitution(1)
+    self.fixture:setRestitution(1)
 
     self.fixture:setUserData(self)
 
@@ -65,7 +65,7 @@ function Bola:aplicarForca(cimaBaixo, esquerdaDireita)
         end
 
     elseif cimaBaixo == "baixo" then
-        self.dy = 60
+        self.dy = 200
         if vx < 0 then
             vx = math.random(-200, -150)
             self.dx = vx
