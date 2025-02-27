@@ -106,6 +106,12 @@ function criarOsblocos(world)
     end
 end
 
+function destruirBlocos()
+    for i, bloco in ipairs(blocos) do
+        bloco:destroy()
+        table.remove(blocos, i)
+    end
+end
 
 
 
@@ -166,6 +172,9 @@ function love.update(dt)
 
     if gamestate == "play" then    
         
+        if blocos == {} then
+            gamestate = "start"
+        end
         
         --movimetaçãoda plataforma
         if love.keyboard.isDown('left') then
@@ -189,6 +198,8 @@ function love.update(dt)
             for i, bloco in ipairs(blocos) do
                 if blocoColisao == "colidiu" .. bloco.index then
                     bloco:destroy()
+                    table.remove(blocos, i)
+                    blocoColisao = "w"
                 end
             end
         end
@@ -230,9 +241,12 @@ function love.update(dt)
         else
             plataforma1.dx = 0
         end
-
+        
         --bola acompanhar a plataforma
         bola.body:setPosition(plataforma1.x + plataforma1.width / 2, 500)
+        
+        --destruir os blocos
+        destruirBlocos()
     end
 
     plataforma1:update(dt)
@@ -241,7 +255,7 @@ function love.update(dt)
     if bola.y > 600 then
         bola:reset()
         plataforma1:reset()
-        gamestate = start
+        gamestate = "start"
     end
 
 end
@@ -254,9 +268,11 @@ function love.keypressed(key)
         --quando o jogo começa, a bola é lançada
         if gamestate == "start" then
             gamestate = "play"
+            criarOsblocos(world)
             bola:aplicarForca("cimaInicio", "")
         else
             gamestate = "start"
+            destruirBlocos()
             bola:reset()
             plataforma1:reset()
         end
@@ -264,12 +280,15 @@ function love.keypressed(key)
 end
 
 function love.draw()
-    love.graphics.setFont(bigfont)
-    love.graphics.print("TA ONLINE", 50, 50)
+    
+    if gamestate == "start" then
+        love.graphics.setFont(bigfont)
+        love.graphics.print("O Quebra tijolo", 130, 50)
 
-    love.graphics.setFont(smallFont)
-    love.graphics.print(mensagem, 100, 100, nil, 2)
-    love.graphics.print(gamestate, 100, 400, nil, 2)
+        love.graphics.setFont(smallFont)
+        love.graphics.print("Aperte enter", 200, 100, nil, 2)
+    end
+    --love.graphics.print(gamestate, 100, 400, nil, 2)
 
 
     --Renderização
@@ -284,11 +303,13 @@ function love.draw()
     bola:render()
         
     --renderizando blocos
-    if blocos then
-        for i, bloco in ipairs(blocos) do
-            bloco:render()
+    if gamestate == "play" then
+        if blocos then
+            for i, bloco in ipairs(blocos) do
+                bloco:render()
+            end
         end
     end
-    love.graphics.rectangle("line", sensor.x, sensor.y, sensor.width, sensor.height)
+    --love.graphics.rectangle("line", sensor.x, sensor.y, sensor.width, sensor.height)
 
 end
